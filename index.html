@@ -1,12 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Rucha 💖</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    text-align: center;
+    overflow: hidden;
+}
+
+/* Proposal Box */
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.92);
+    color: #ff1f5a;
+    padding: 30px;
+    border-radius: 22px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    max-width: 420px;
+    width: 92%;
+    position: relative; /* IMPORTANT */
+}
+
+h1 {
+    font-size: 26px;
+    font-weight: bold;
+    color: #ff004c;
+}
+
+p {
+    font-size: 17px;
+    line-height: 1.7;
+    color: #b8003f;
+}
+
+/* Buttons */
+button {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+#acceptBtn {
+    background: #ff1f5a;
+    color: white;
+}
+#acceptBtn:hover {
+    background: #ff0040;
+}
+
+#rejectBtn {
+    background: white;
+    color: #ff1f5a;
+    border: 2px solid #ff1f5a;
+    position: absolute;
+    transition: 0.2s ease;
+}
+
+/* Game Screen */
+#gameScreen { display: none; }
+
+#scoreBoard {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    font-weight: bold;
+    background: rgba(255,255,255,0.9);
+    color: #ff004c;
+    padding: 10px 20px;
+    border-radius: 20px;
+}
+
+/* Falling Hearts */
+.heart {
+    position: fixed;
+    font-size: 34px;
+    cursor: pointer;
+    animation: fall linear;
+    z-index: 9999;
+    pointer-events: auto;
+}
+
+@keyframes fall {
+    from { top: -50px; }
+    to { top: 100vh; }
+}
+
+/* Final Message */
+#loveMessage {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    color: #ff004c;
+    padding: 30px;
+    border-radius: 20px;
+    font-size: 22px;
+    box-shadow: 0 0 30px rgba(255,0,100,0.6);
+    z-index: 99999;
+    text-align: center;
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+  h1 { font-size: 22px; }
+  p { font-size: 16px; }
+  button { font-size: 14px; padding: 10px 18px; }
+  .heart { font-size: 28px; }
+}
+</style>
 </head>
+
 <body>
-    <h1>Welcome to My Proposal</h1>
-    <p>This is a basic HTML file.</p>
+
+<!-- Proposal Screen -->
+<div class="container" id="proposalScreen">
+    <h1>💖 Dear Rucha 💖</h1>
+    <p>
+        From the day you came into my life, everything changed for the better.  
+        Your smile, your support, your presence mean everything to me.  
+        I can’t imagine my life without you.  
+        <br><br>
+        <b>Will you stay with me forever? 💍</b>
+    </p>
+
+    <button id="acceptBtn">Yes, Always 💕</button>
+    <button id="rejectBtn">No 🙈</button>
+</div>
+
+<!-- Game Screen -->
+<div id="gameScreen">
+    <div id="scoreBoard">💖 Score: <span id="score">0</span></div>
+</div>
+
+<!-- Final Love Message -->
+<div id="loveMessage">
+    <h2>Rucha 💕</h2>
+    <p>You caught my heart… and now you own it forever 🥺💍</p>
+    <p>I love you endlessly ❤️</p>
+</div>
+
+<script>
+const rejectBtn = document.getElementById("rejectBtn");
+const acceptBtn = document.getElementById("acceptBtn");
+const proposalScreen = document.getElementById("proposalScreen");
+const gameScreen = document.getElementById("gameScreen");
+const loveMessage = document.getElementById("loveMessage");
+
+/* MOVE NO BUTTON INSIDE CONTAINER ONLY */
+function moveButton() {
+    const container = document.getElementById("proposalScreen");
+    const rect = container.getBoundingClientRect();
+
+    const btnWidth = rejectBtn.offsetWidth;
+    const btnHeight = rejectBtn.offsetHeight;
+    const padding = 10;
+
+    const x = Math.random() * (rect.width - btnWidth - padding);
+    const y = Math.random() * (rect.height - btnHeight - padding);
+
+    rejectBtn.style.left = x + "px";
+    rejectBtn.style.top = y + "px";
+}
+
+rejectBtn.addEventListener("mouseover", moveButton);
+rejectBtn.addEventListener("mousedown", moveButton);
+rejectBtn.addEventListener("touchstart", moveButton);
+
+/* START GAME */
+acceptBtn.addEventListener("click", () => {
+    proposalScreen.style.display = "none";
+    gameScreen.style.display = "block";
+    startGame();
+});
+
+/* HEART GAME */
+let score = 0;
+let gameInterval;
+
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💖";
+
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    const duration = 4 + Math.random() * 3;
+    heart.style.animationDuration = duration + "s";
+
+    document.body.appendChild(heart);
+
+    function catchHeart() {
+        score++;
+        document.getElementById("score").innerText = score;
+        heart.remove();
+
+        if (score >= 10) {
+            clearInterval(gameInterval);
+            loveMessage.style.display = "block";
+        }
+    }
+
+    heart.addEventListener("click", catchHeart);
+    heart.addEventListener("touchstart", catchHeart);
+
+    setTimeout(() => heart.remove(), duration * 1000);
+}
+
+function startGame() {
+    gameInterval = setInterval(createHeart, 700);
+}
+</script>
+
 </body>
 </html>
